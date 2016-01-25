@@ -169,9 +169,9 @@ class WmsStore(ResourceInfo):
         self.catalog = catalog
         self.workspace = workspace
         self.name = name
+        self.user = user
+        self.password = password
         self.metadata = {}
-        self.metadata['user'] = user
-        self.metadata['password'] = password 
 
     @property
     def href(self):
@@ -181,12 +181,16 @@ class WmsStore(ResourceInfo):
     name = xml_property("name")
     nativeName = xml_property("nativeName")
     capabilitiesURL = xml_property("capabilitiesURL")
+    user = xml_property("user")
+    password = xml_property("password")
     type = xml_property("type")
     metadata = xml_property("metadata", key_value_pairs)
 
     writers = dict(enabled = write_bool("enabled"),
                    name = write_string("name"),
                    capabilitiesURL = write_string("capabilitiesURL"),
+                   user = write_string("user"),
+                   password = write_string("password"),
                    type = write_string("type"),
                    metadata = write_dict("metadata"))
 
@@ -225,12 +229,8 @@ class UnsavedWmsStore(WmsStore):
 
     def __init__(self, catalog, name, workspace, user, password):
         super(UnsavedWmsStore, self).__init__(catalog, workspace, name, user, password)
-        metadata = {}
-        if user is not None and password is not None:
-            metadata['user'] = user
-            metadata['password'] = password
         self.dirty.update(dict(
-            name=name, enabled=True, capabilitiesURL="", type="WMS", metadata=metadata))
+            name=name, enabled=True, capabilitiesURL="", type="WMS", user=user, password=password))
 
     @property
     def href(self):
